@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data quality report</title>
+<style>
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;
+background:#f6f7f9;color:#1d2330}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:32px 0 8px}
+.meta{color:#5b6475;margin:0 0 16px}
+.verdict{display:inline-block;padding:6px 14px;border-radius:6px;font-weight:600;color:#fff}
+.ok{background:#1f7a4d}.bad{background:#b3261e}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.tile{background:#fff;border:1px solid #dde1e8;border-radius:6px;padding:8px 14px;min-width:90px}
+.tile b{display:block;font-size:20px}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+th,td{border:1px solid #dde1e8;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef0f4}
+.wrap{overflow-x:auto}
+.badge{font-weight:600;font-size:12px;padding:2px 8px;border-radius:4px;color:#fff}
+.b-pass{background:#1f7a4d}.b-fail{background:#b3261e}.b-warn{background:#a15c00}
+.b-error{background:#5b2a86}
+.num{text-align:right}
+pre{background:#1d2330;color:#e8ebf1;padding:10px;border-radius:6px;overflow-x:auto;
+font-size:13px}
+details{margin:6px 0}
+section.failure{background:#fff;border:1px solid #dde1e8;border-left:4px solid #b3261e;
+border-radius:6px;padding:12px 14px;margin:12px 0}
+section.failure.warn{border-left-color:#a15c00}
+section.failure.error{border-left-color:#5b2a86}
+.null{color:#8a92a3;font-style:italic}
+</style>
+</head>
+<body>
+<main>
+<h1>Data quality report</h1>
+<p class="meta">Run 2026-11-21 11:01:28, 0.15 s,
+11 checks, data-quality-checks 0.1.0</p>
+<span class="verdict bad">FAILED</span>
+<div class="tiles"><div class="tile"><b>2</b>Pass</div><div class="tile"><b>9</b>Fail</div><div class="tile"><b>0</b>Warn</div><div class="tile"><b>0</b>Error</div></div>
+<h2>Checks</h2>
+<div class="wrap"><table>
+<tr><th>Status</th><th>Check</th><th>Type</th><th>Table</th><th>Severity</th>
+<th class="num">Failing rows</th></tr>
+<tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-customer-email-present">customer email present</a></td><td>not_null</td><td>customers</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-customer-id-unique">customer id unique</a></td><td>unique</td><td>customers</td><td>error</td><td class="num">4</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-customer-email-format">customer email format</a></td><td>regex</td><td>customers</td><td>error</td><td class="num">3</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-order-status-known">order status known</a></td><td>accepted_values</td><td>orders</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-order-quantity-1-to-50">order quantity 1 to 50</a></td><td>range</td><td>orders</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-order-customer-exists">order customer exists</a></td><td>foreign_key</td><td>orders</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-order-product-exists">order product exists</a></td><td>foreign_key</td><td>orders</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-pass">PASS</span></td><td>orders not truncated</td><td>row_count</td><td>orders</td><td>error</td><td class="num">0</td></tr><tr><td><span class="badge b-pass">PASS</span></td><td>orders updated in last 3 days</td><td>freshness</td><td>orders</td><td>error</td><td class="num">0</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-product-price-0-01-to-10000">product price 0.01 to 10000</a></td><td>range</td><td>products</td><td>error</td><td class="num">2</td></tr><tr><td><span class="badge b-fail">FAIL</span></td><td><a href="#c-ship-date-not-before-order-date">ship date not before order date</a></td><td>sql</td><td></td><td>error</td><td class="num">2</td></tr>
+</table></div>
+<h2>Failures and samples of bad rows</h2>
+<section class="failure fail" id="c-customer-email-present">
+<h3>customer email present <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>customer_id</th><th>email</th><th>tier</th><th>signup_date</th></tr><tr><td>10</td><td>   </td><td>bronze</td><td>2025-12-30</td></tr><tr><td>21</td><td class="null">null</td><td>gold</td><td>2025-06-03</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM &quot;customers&quot; WHERE &quot;email&quot; IS NULL OR trim(CAST(&quot;email&quot; AS VARCHAR)) = &#x27;&#x27;</pre></details>
+</section>
+<section class="failure fail" id="c-customer-id-unique">
+<h3>customer id unique <span class="badge b-fail">FAIL</span></h3>
+<p>4 row(s) break this rule. First 4 shown.</p>
+<div class="wrap"><table><tr><th>customer_id</th><th>email</th><th>tier</th><th>signup_date</th><th>copies</th></tr><tr><td>4</td><td>dev.4@example.com</td><td>bronze</td><td>2025-08-04</td><td>2</td></tr><tr><td>4</td><td>dev.4@example.com</td><td>gold</td><td>2025-08-04</td><td>2</td></tr><tr><td>5</td><td>gus.5@example.com</td><td>bronze</td><td>2026-07-22</td><td>2</td></tr><tr><td>5</td><td>gus.5@example.com</td><td>silver</td><td>2026-07-22</td><td>2</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * EXCLUDE (_dqc_copies), _dqc_copies AS copies FROM (SELECT *, count(*) OVER (PARTITION BY &quot;customer_id&quot;) AS _dqc_copies FROM &quot;customers&quot; WHERE &quot;customer_id&quot; IS NOT NULL) WHERE _dqc_copies &gt; 1 ORDER BY &quot;customer_id&quot;</pre></details>
+</section>
+<section class="failure fail" id="c-customer-email-format">
+<h3>customer email format <span class="badge b-fail">FAIL</span></h3>
+<p>3 row(s) break this rule. First 3 shown.</p>
+<div class="wrap"><table><tr><th>customer_id</th><th>email</th><th>tier</th><th>signup_date</th></tr><tr><td>6</td><td>ivan.6@example</td><td>bronze</td><td>2024-06-28</td></tr><tr><td>10</td><td>   </td><td>bronze</td><td>2025-12-30</td></tr><tr><td>37</td><td>eli.37example.com</td><td>gold</td><td>2026-02-11</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM &quot;customers&quot; WHERE &quot;email&quot; IS NOT NULL AND NOT regexp_full_match(CAST(&quot;email&quot; AS VARCHAR), &#x27;[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}&#x27;)</pre></details>
+</section>
+<section class="failure fail" id="c-order-status-known">
+<h3>order status known <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>order_id</th><th>customer_id</th><th>sku</th><th>quantity</th><th>order_date</th><th>ship_date</th><th>status</th></tr><tr><td>100023</td><td>7</td><td>P-0009</td><td>5</td><td>2026-08-29</td><td>2026-09-01</td><td>cancelled</td></tr><tr><td>100112</td><td>18</td><td>P-0004</td><td>13</td><td>2026-11-09</td><td>2026-11-12</td><td>SHIPPED</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM &quot;orders&quot; WHERE &quot;status&quot; IS NOT NULL AND CAST(&quot;status&quot; AS VARCHAR) NOT IN (&#x27;placed&#x27;, &#x27;shipped&#x27;, &#x27;delivered&#x27;, &#x27;returned&#x27;)</pre></details>
+</section>
+<section class="failure fail" id="c-order-quantity-1-to-50">
+<h3>order quantity 1 to 50 <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>order_id</th><th>customer_id</th><th>sku</th><th>quantity</th><th>order_date</th><th>ship_date</th><th>status</th></tr><tr><td>100025</td><td>21</td><td>P-0005</td><td>51</td><td>2026-09-06</td><td>2026-09-09</td><td>shipped</td></tr><tr><td>100063</td><td>19</td><td>P-0001</td><td>500</td><td>2026-08-24</td><td>2026-08-25</td><td>shipped</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM &quot;orders&quot; WHERE &quot;quantity&quot; IS NOT NULL AND (TRY_CAST(&quot;quantity&quot; AS DOUBLE) IS NULL OR TRY_CAST(&quot;quantity&quot; AS DOUBLE) &lt; 1 OR TRY_CAST(&quot;quantity&quot; AS DOUBLE) &gt; 50)</pre></details>
+</section>
+<section class="failure fail" id="c-order-customer-exists">
+<h3>order customer exists <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>order_id</th><th>customer_id</th><th>sku</th><th>quantity</th><th>order_date</th><th>ship_date</th><th>status</th></tr><tr><td>100016</td><td>1055</td><td>P-0001</td><td>16</td><td>2026-09-02</td><td>2026-09-07</td><td>delivered</td></tr><tr><td>100149</td><td>1869</td><td>P-0006</td><td>11</td><td>2026-09-04</td><td>2026-09-07</td><td>delivered</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT child.* FROM &quot;orders&quot; AS child WHERE child.&quot;customer_id&quot; IS NOT NULL AND NOT EXISTS (SELECT 1 FROM &quot;customers&quot; AS parent WHERE CAST(parent.&quot;customer_id&quot; AS VARCHAR) = CAST(child.&quot;customer_id&quot; AS VARCHAR))</pre></details>
+</section>
+<section class="failure fail" id="c-order-product-exists">
+<h3>order product exists <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>order_id</th><th>customer_id</th><th>sku</th><th>quantity</th><th>order_date</th><th>ship_date</th><th>status</th></tr><tr><td>100017</td><td>6</td><td>P-9999</td><td>4</td><td>2026-08-30</td><td>2026-09-02</td><td>shipped</td></tr><tr><td>100106</td><td>22</td><td>p-0001</td><td>14</td><td>2026-09-24</td><td>2026-09-25</td><td>shipped</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT child.* FROM &quot;orders&quot; AS child WHERE child.&quot;sku&quot; IS NOT NULL AND NOT EXISTS (SELECT 1 FROM &quot;products&quot; AS parent WHERE CAST(parent.&quot;sku&quot; AS VARCHAR) = CAST(child.&quot;sku&quot; AS VARCHAR))</pre></details>
+</section>
+<section class="failure fail" id="c-product-price-0-01-to-10000">
+<h3>product price 0.01 to 10000 <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>sku</th><th>name</th><th>category</th><th>price</th></tr><tr><td>P-0003</td><td>garden item 3</td><td>garden</td><td>0.0</td></tr><tr><td>P-0009</td><td>office item 9</td><td>office</td><td>99999.99</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM &quot;products&quot; WHERE &quot;price&quot; IS NOT NULL AND (TRY_CAST(&quot;price&quot; AS DOUBLE) IS NULL OR TRY_CAST(&quot;price&quot; AS DOUBLE) &lt; 0.01 OR TRY_CAST(&quot;price&quot; AS DOUBLE) &gt; 10000)</pre></details>
+</section>
+<section class="failure fail" id="c-ship-date-not-before-order-date">
+<h3>ship date not before order date <span class="badge b-fail">FAIL</span></h3>
+<p>2 row(s) break this rule. First 2 shown.</p>
+<div class="wrap"><table><tr><th>order_id</th><th>customer_id</th><th>sku</th><th>quantity</th><th>order_date</th><th>ship_date</th><th>status</th></tr><tr><td>100012</td><td>34</td><td>P-0008</td><td>12</td><td>2026-10-26</td><td>2026-10-16</td><td>placed</td></tr><tr><td>100039</td><td>17</td><td>P-0003</td><td>15</td><td>2026-11-02</td><td>2026-10-19</td><td>placed</td></tr></table></div>
+<details><summary>SQL</summary><pre>SELECT * FROM (
+SELECT * FROM orders WHERE ship_date &lt; order_date
+) AS custom_check</pre></details>
+</section>
+<h2>Files</h2>
+<table><tr><th>Table</th><th>File</th></tr><tr><td>customers</td><td>customers.csv</td></tr><tr><td>orders</td><td>orders.parquet</td></tr><tr><td>products</td><td>products.xlsx</td></tr></table>
+</main>
+</body>
+</html>

@@ -1,0 +1,381 @@
+{
+  "tool": "data-quality-checks 0.1.0",
+  "started": "2026-11-21T11:01:28",
+  "seconds": 0.145,
+  "passed": false,
+  "counts": {
+    "pass": 2,
+    "fail": 9,
+    "warn": 0,
+    "error": 0
+  },
+  "files": {
+    "customers": "customers.csv",
+    "orders": "orders.parquet",
+    "products": "products.xlsx"
+  },
+  "checks": [
+    {
+      "name": "customer email present",
+      "type": "not_null",
+      "table": "customers",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT * FROM \"customers\" WHERE \"email\" IS NULL OR trim(CAST(\"email\" AS VARCHAR)) = ''",
+      "error": null,
+      "sample_columns": [
+        "customer_id",
+        "email",
+        "tier",
+        "signup_date"
+      ],
+      "sample_rows": [
+        [
+          10,
+          "   ",
+          "bronze",
+          "2025-12-30"
+        ],
+        [
+          21,
+          null,
+          "gold",
+          "2025-06-03"
+        ]
+      ]
+    },
+    {
+      "name": "customer id unique",
+      "type": "unique",
+      "table": "customers",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 4,
+      "sql": "SELECT * EXCLUDE (_dqc_copies), _dqc_copies AS copies FROM (SELECT *, count(*) OVER (PARTITION BY \"customer_id\") AS _dqc_copies FROM \"customers\" WHERE \"customer_id\" IS NOT NULL) WHERE _dqc_copies > 1 ORDER BY \"customer_id\"",
+      "error": null,
+      "sample_columns": [
+        "customer_id",
+        "email",
+        "tier",
+        "signup_date",
+        "copies"
+      ],
+      "sample_rows": [
+        [
+          4,
+          "dev.4@example.com",
+          "bronze",
+          "2025-08-04",
+          2
+        ],
+        [
+          4,
+          "dev.4@example.com",
+          "gold",
+          "2025-08-04",
+          2
+        ],
+        [
+          5,
+          "gus.5@example.com",
+          "bronze",
+          "2026-07-22",
+          2
+        ],
+        [
+          5,
+          "gus.5@example.com",
+          "silver",
+          "2026-07-22",
+          2
+        ]
+      ]
+    },
+    {
+      "name": "customer email format",
+      "type": "regex",
+      "table": "customers",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 3,
+      "sql": "SELECT * FROM \"customers\" WHERE \"email\" IS NOT NULL AND NOT regexp_full_match(CAST(\"email\" AS VARCHAR), '[a-z0-9._%+-]+@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.[a-z]{2,}')",
+      "error": null,
+      "sample_columns": [
+        "customer_id",
+        "email",
+        "tier",
+        "signup_date"
+      ],
+      "sample_rows": [
+        [
+          6,
+          "ivan.6@example",
+          "bronze",
+          "2024-06-28"
+        ],
+        [
+          10,
+          "   ",
+          "bronze",
+          "2025-12-30"
+        ],
+        [
+          37,
+          "eli.37example.com",
+          "gold",
+          "2026-02-11"
+        ]
+      ]
+    },
+    {
+      "name": "order status known",
+      "type": "accepted_values",
+      "table": "orders",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT * FROM \"orders\" WHERE \"status\" IS NOT NULL AND CAST(\"status\" AS VARCHAR) NOT IN ('placed', 'shipped', 'delivered', 'returned')",
+      "error": null,
+      "sample_columns": [
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "order_date",
+        "ship_date",
+        "status"
+      ],
+      "sample_rows": [
+        [
+          100023,
+          7,
+          "P-0009",
+          5,
+          "2026-08-29",
+          "2026-09-01",
+          "cancelled"
+        ],
+        [
+          100112,
+          18,
+          "P-0004",
+          13,
+          "2026-11-09",
+          "2026-11-12",
+          "SHIPPED"
+        ]
+      ]
+    },
+    {
+      "name": "order quantity 1 to 50",
+      "type": "range",
+      "table": "orders",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT * FROM \"orders\" WHERE \"quantity\" IS NOT NULL AND (TRY_CAST(\"quantity\" AS DOUBLE) IS NULL OR TRY_CAST(\"quantity\" AS DOUBLE) < 1 OR TRY_CAST(\"quantity\" AS DOUBLE) > 50)",
+      "error": null,
+      "sample_columns": [
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "order_date",
+        "ship_date",
+        "status"
+      ],
+      "sample_rows": [
+        [
+          100025,
+          21,
+          "P-0005",
+          51,
+          "2026-09-06",
+          "2026-09-09",
+          "shipped"
+        ],
+        [
+          100063,
+          19,
+          "P-0001",
+          500,
+          "2026-08-24",
+          "2026-08-25",
+          "shipped"
+        ]
+      ]
+    },
+    {
+      "name": "order customer exists",
+      "type": "foreign_key",
+      "table": "orders",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT child.* FROM \"orders\" AS child WHERE child.\"customer_id\" IS NOT NULL AND NOT EXISTS (SELECT 1 FROM \"customers\" AS parent WHERE CAST(parent.\"customer_id\" AS VARCHAR) = CAST(child.\"customer_id\" AS VARCHAR))",
+      "error": null,
+      "sample_columns": [
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "order_date",
+        "ship_date",
+        "status"
+      ],
+      "sample_rows": [
+        [
+          100016,
+          1055,
+          "P-0001",
+          16,
+          "2026-09-02",
+          "2026-09-07",
+          "delivered"
+        ],
+        [
+          100149,
+          1869,
+          "P-0006",
+          11,
+          "2026-09-04",
+          "2026-09-07",
+          "delivered"
+        ]
+      ]
+    },
+    {
+      "name": "order product exists",
+      "type": "foreign_key",
+      "table": "orders",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT child.* FROM \"orders\" AS child WHERE child.\"sku\" IS NOT NULL AND NOT EXISTS (SELECT 1 FROM \"products\" AS parent WHERE CAST(parent.\"sku\" AS VARCHAR) = CAST(child.\"sku\" AS VARCHAR))",
+      "error": null,
+      "sample_columns": [
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "order_date",
+        "ship_date",
+        "status"
+      ],
+      "sample_rows": [
+        [
+          100017,
+          6,
+          "P-9999",
+          4,
+          "2026-08-30",
+          "2026-09-02",
+          "shipped"
+        ],
+        [
+          100106,
+          22,
+          "p-0001",
+          14,
+          "2026-09-24",
+          "2026-09-25",
+          "shipped"
+        ]
+      ]
+    },
+    {
+      "name": "orders not truncated",
+      "type": "row_count",
+      "table": "orders",
+      "severity": "error",
+      "status": "pass",
+      "failing_rows": 0,
+      "sql": "SELECT row_count FROM (SELECT count(*) AS row_count FROM \"orders\") WHERE row_count < 75",
+      "error": null,
+      "sample_columns": [],
+      "sample_rows": []
+    },
+    {
+      "name": "orders updated in last 3 days",
+      "type": "freshness",
+      "table": "orders",
+      "severity": "error",
+      "status": "pass",
+      "failing_rows": 0,
+      "sql": "SELECT latest, DATE '2026-11-21' - latest AS age_days, 3 AS max_age_days FROM (SELECT max(coalesce(TRY_CAST(\"order_date\" AS DATE), CAST(TRY_CAST(\"order_date\" AS TIMESTAMP) AS DATE))) AS latest FROM \"orders\") WHERE latest IS NULL OR DATE '2026-11-21' - latest > 3",
+      "error": null,
+      "sample_columns": [],
+      "sample_rows": []
+    },
+    {
+      "name": "product price 0.01 to 10000",
+      "type": "range",
+      "table": "products",
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT * FROM \"products\" WHERE \"price\" IS NOT NULL AND (TRY_CAST(\"price\" AS DOUBLE) IS NULL OR TRY_CAST(\"price\" AS DOUBLE) < 0.01 OR TRY_CAST(\"price\" AS DOUBLE) > 10000)",
+      "error": null,
+      "sample_columns": [
+        "sku",
+        "name",
+        "category",
+        "price"
+      ],
+      "sample_rows": [
+        [
+          "P-0003",
+          "garden item 3",
+          "garden",
+          0.0
+        ],
+        [
+          "P-0009",
+          "office item 9",
+          "office",
+          99999.99
+        ]
+      ]
+    },
+    {
+      "name": "ship date not before order date",
+      "type": "sql",
+      "table": null,
+      "severity": "error",
+      "status": "fail",
+      "failing_rows": 2,
+      "sql": "SELECT * FROM (\nSELECT * FROM orders WHERE ship_date < order_date\n) AS custom_check",
+      "error": null,
+      "sample_columns": [
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "order_date",
+        "ship_date",
+        "status"
+      ],
+      "sample_rows": [
+        [
+          100012,
+          34,
+          "P-0008",
+          12,
+          "2026-10-26",
+          "2026-10-16",
+          "placed"
+        ],
+        [
+          100039,
+          17,
+          "P-0003",
+          15,
+          "2026-11-02",
+          "2026-10-19",
+          "placed"
+        ]
+      ]
+    }
+  ]
+}

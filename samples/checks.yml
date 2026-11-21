@@ -1,0 +1,62 @@
+tables:
+  customers: customers.csv
+  orders: orders.parquet
+  products: products.xlsx
+checks:
+- name: customer email present
+  table: customers
+  type: not_null
+  column: email
+- name: customer id unique
+  table: customers
+  type: unique
+  column: customer_id
+- name: customer email format
+  table: customers
+  type: regex
+  column: email
+  pattern: '[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}'
+- name: order status known
+  table: orders
+  type: accepted_values
+  column: status
+  values:
+  - placed
+  - shipped
+  - delivered
+  - returned
+- name: order quantity 1 to 50
+  table: orders
+  type: range
+  column: quantity
+  min: 1
+  max: 50
+- name: order customer exists
+  table: orders
+  type: foreign_key
+  column: customer_id
+  references: customers.customer_id
+- name: order product exists
+  table: orders
+  type: foreign_key
+  column: sku
+  references: products.sku
+- name: orders not truncated
+  table: orders
+  type: row_count
+  min: 75
+- name: orders updated in last 3 days
+  table: orders
+  type: freshness
+  column: order_date
+  max_age_days: 3
+  as_of: '2026-11-21'
+- name: product price 0.01 to 10000
+  table: products
+  type: range
+  column: price
+  min: 0.01
+  max: 10000
+- name: ship date not before order date
+  type: sql
+  query: SELECT * FROM orders WHERE ship_date < order_date

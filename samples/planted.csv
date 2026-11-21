@@ -1,0 +1,23 @@
+fault,table,key,meant_to_be_caught_by
+blank_email,customers,21,customer email present
+blank_email,customers,10,customer email present
+duplicate_customer,customers,4,customer id unique
+duplicate_customer,customers,5,customer id unique
+bad_email,customers,6,customer email format
+bad_email,customers,37,customer email format
+bad_status,orders,100023,order status known
+bad_status,orders,100112,order status known
+bad_quantity,orders,100063,order quantity 1 to 50
+bad_quantity,orders,100025,order quantity 1 to 50
+orphan_customer,orders,100016,order customer exists
+orphan_customer,orders,100149,order customer exists
+orphan_sku,orders,100017,order product exists
+orphan_sku,orders,100106,order product exists
+ship_before_order,orders,100012,ship date not before order date
+ship_before_order,orders,100039,ship date not before order date
+bad_price,products,P-0003,product price 0.01 to 10000
+bad_price,products,P-0009,product price 0.01 to 10000
+plausible_quantity,orders,100086,(no check covers this)
+plausible_quantity,orders,100053,(no check covers this)
+plausible_email,customers,17,(no check covers this)
+plausible_email,customers,29,(no check covers this)
