@@ -200,6 +200,11 @@ what declarative checks miss.
 
 {miss_lines}
 
+The `bad_email` misses are addresses whose domain was cut from `mail.example.net` to
+`mail.example`. That still matches the email pattern, so no format rule can flag it; it is the
+same limit as the plausible-value faults below. A test
+(`test_email_format_misses_a_domain_cut_short`) pins this behavior.
+
 ## Detail
 
 "Extra rows flagged" are rows the intended check flagged whose key was not planted. Rows are
