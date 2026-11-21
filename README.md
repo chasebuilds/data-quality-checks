@@ -4,6 +4,8 @@
 
 Checks CSV, Excel and Parquet files against rules written in a short YAML file, and writes a pass/fail report that shows the bad rows. Every rule is compiled to one DuckDB SQL query, and `--show-sql` prints it. The command exits non-zero when a check fails, so it can stop a pipeline or a CI job before bad data moves on.
 
+![The HTML report for a sample run: 9 failing checks with sample bad rows](docs/preview.png)
+
 ## Measured result
 
 Faults of known kinds were planted in generated files, and the checks were scored on what they caught. The table below is written by the benchmark script from a real run, not typed by hand. Method, misses and limits: [BENCHMARK.md](BENCHMARK.md).
