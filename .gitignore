@@ -13,3 +13,4 @@ htmlcov/
 benchmark/data/
 dqc-report/
 ~$*.xlsx
+_site/

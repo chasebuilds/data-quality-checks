@@ -2,9 +2,11 @@
 
 [![ci](https://github.com/chasebuilds/data-quality-checks/actions/workflows/ci.yml/badge.svg)](https://github.com/chasebuilds/data-quality-checks/actions/workflows/ci.yml) ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue) [![MIT license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Checks CSV, Excel and Parquet files against rules written in a short YAML file, and writes a pass/fail report that shows the bad rows. Every rule is compiled to one DuckDB SQL query, and `--show-sql` prints it. The command exits non-zero when a check fails, so it can stop a pipeline or a CI job before bad data moves on.
+**[Live demo: try it in your browser](https://chasebuilds.github.io/data-quality-checks/)**. Drop in your own file or run the bundled sample with one click. The real package runs in the page with Pyodide, so files never leave your browser.
 
-![The HTML report for a sample run: 9 failing checks with sample bad rows](docs/preview.png)
+[![The live demo after running the sample: the tool's summary, result tabs and output table](docs/demo.png)](https://chasebuilds.github.io/data-quality-checks/)
+
+Checks CSV, Excel and Parquet files against rules written in a short YAML file, and writes a pass/fail report that shows the bad rows. Every rule is compiled to one DuckDB SQL query, and `--show-sql` prints it. The command exits non-zero when a check fails, so it can stop a pipeline or a CI job before bad data moves on.
 
 ## Measured result
 
@@ -31,6 +33,8 @@ False alarms on clean data: 0 failing checks in 220 check runs. All 11 checks on
 <!-- benchmark:end -->
 
 The last two rows are faults no rule can catch: a wrong value that still looks valid. They are there to show the limit. The 16 missed bad emails are the same kind of fault: a domain cut from `mail.example.net` to `mail.example` still looks like a real address. [LIMITATIONS.md](LIMITATIONS.md) covers both.
+
+![The HTML report for a sample run: 9 failing checks with sample bad rows](docs/preview.png)
 
 ## A checks file
 
