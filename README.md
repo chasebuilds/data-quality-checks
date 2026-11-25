@@ -207,3 +207,11 @@ The sample files were made with `python -m benchmark.generate --out samples --se
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## More from Chase Builds
+
+- **[react-analytics-dashboard](https://github.com/chasebuilds/react-analytics-dashboard)**: Sales and operations dashboard with filters, charts and CSV export. ([live demo](https://chasebuilds.github.io/react-analytics-dashboard/))
+- **[housing-market-trends](https://github.com/chasebuilds/housing-market-trends)**: Monthly market metrics and a time-adjustment rate with a confidence band. ([live demo](https://chasebuilds.github.io/housing-market-trends/))
+- **[automated-reporting-system](https://github.com/chasebuilds/automated-reporting-system)**: Weekly exports in, finished Excel report and dashboard out. Stops itself when the data looks wrong. ([live demo](https://chasebuilds.github.io/automated-reporting-system/))
+
+[All projects, sorted by industry](https://github.com/chasebuilds) · [chasebuilds.github.io](https://chasebuilds.github.io)
