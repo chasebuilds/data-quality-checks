@@ -1,0 +1,7 @@
+{
+  "title": "Data Quality Checks: Declarative checks for CSV, Excel and Parquet | Chase Builds",
+  "description": "Declarative data-quality checks for CSV, Excel and Parquet files, run as DuckDB SQL with a pass and fail report and sample failing rows, in your browser.",
+  "url": "https://chasebuilds.github.io/data-quality-checks/",
+  "image": "docs/demo.png",
+  "repo": "data-quality-checks"
+}
