@@ -18,7 +18,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import build  # noqa: E402
 
 # Substrings the tool's own printed summary must contain, and result tabs that must appear.
-EXPECT_LOG = ["FAIL   customer id unique               4 row(s)", "failed"]
+EXPECT_LOG = [
+    "FAIL   customer id unique               4 row(s)",
+    "failed",
+    "PASS   orders updated in last 3 days",
+    "2 passed, 9 failed",
+]
 EXPECT_TABS: list[str] = ["Checks"]
 
 

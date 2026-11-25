@@ -10,7 +10,7 @@ window.DEMO = {
     { id: "checks", label: "Checks file (.yml or .toml)", accept: ".yml,.yaml,.toml", optional: true, sample: "samples/checks.yml" },
   ],
   options: [],
-  sampleNote: 'The sample is <a href="samples/checks.yml">checks.yml</a> run against three synthetic files (<a href="samples/customers.csv">customers.csv</a>, <a href="samples/orders.parquet">orders.parquet</a>, <a href="samples/products.xlsx">products.xlsx</a>) with two planted problems of each kind, listed in <a href="samples/planted.csv">planted.csv</a>. Any box left empty uses the sample file.<br>DuckDB and pyarrow both have official Pyodide builds, so the same SQL runs here as on a desktop.',
+  sampleNote: 'The sample is <a href="samples/checks.yml">checks.yml</a> run against three synthetic files (<a href="samples/customers.csv">customers.csv</a>, <a href="samples/orders.parquet">orders.parquet</a>, <a href="samples/products.xlsx">products.xlsx</a>) with two planted problems of each kind, listed in <a href="samples/planted.csv">planted.csv</a>. Sample dates are shifted to today at build: every date moves by the same number of days so the newest order is one day before the build date (see <a href="build-date.txt">build-date.txt</a>). The tool and its checks are unchanged. Any box left empty uses the sample file.<br>DuckDB and pyarrow both have official Pyodide builds, so the same SQL runs here as on a desktop.',
   python: `
 import shutil
 from pathlib import Path

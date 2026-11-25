@@ -40,6 +40,9 @@ def build(out: Path = ROOT / "_site") -> Path:
     (out / "samples").mkdir()
     for rel in SAMPLES:
         shutil.copy2(ROOT / rel, out / "samples" / Path(rel).name)
+    if (DEMO / "prepare.py").exists():  # optional repo-specific step on the built site
+        sys.path.insert(0, str(DEMO))
+        importlib.import_module("prepare").prepare(out)
     return out
 
 
